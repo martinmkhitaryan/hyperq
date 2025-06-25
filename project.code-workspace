@@ -1,0 +1,42 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "editor.showUnused": true,
+        "editor.formatOnSave": true,
+        "python.analysis.typeCheckingMode": "basic",
+        "python.autoComplete.extraPaths": [
+            ".venv/lib/"
+        ],
+        "python.analysis.extraPaths": [
+            ".venv/lib/"
+        ],
+        "black-formatter.args": [
+            "--skip-string-normalization",
+            "--line-length",
+            "120"
+        ],
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter",
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": "explicit"
+            },
+        },
+        "flake8.args": [
+            "--max-line-length=120",
+        ],
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.vscode-pylance",
+            "kevinrose.vsc-python-indent",
+            "ms-python.black-formatter",
+            "ms-python.isort"
+        ]
+    }
+}
