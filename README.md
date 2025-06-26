@@ -402,6 +402,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔄 Version History
 
+- **0.0.2**: Added proper PyPI wheel support for Linux and macOS using cibuildwheel; improved release workflow for multi-platform builds and C++20 compatibility
 - **0.0.1**: Initial release with HyperQ and BytesHyperQ implementations
 
 ---
