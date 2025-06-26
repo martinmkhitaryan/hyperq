@@ -12,6 +12,30 @@ authors = [
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.8"
+keywords = [
+    "queue",
+    "hyper",
+    "hyper-queue",
+    "hyperqueue",
+    "high-performance",
+    "inter-process-communication",
+    "ipc",
+    "shared-memory",
+    "ring-buffer",
+    "multiprocessing",
+    "threading",
+    "cython",
+    "c++",
+    "python",
+    "fast",
+    "low-latency",
+    "concurrent",
+    "synchronization",
+    "posix",
+    "unix",
+    "linux",
+    "macos"
+]
 dependencies = [
     "cython>=0.29.0",
 ]
@@ -45,19 +69,3 @@ where = ["src"]
 
 [tool.setuptools.package-dir]
 "" = "src"
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-addopts = [
-    "--strict-markers",
-    "--strict-config",
-    "--verbose",
-    "--tb=short"
-]
-markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-    "integration: marks tests as integration tests",
-]
