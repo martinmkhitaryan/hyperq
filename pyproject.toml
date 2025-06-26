@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hyperq"
-version = "0.0.3"
+version = "0.0.4"
 description = "Hyper-fast queue for Python"
 authors = [
     {name = "Martin Mkhitaryan", email = "mkhitaryan.martin@2000gmail.com"}
@@ -69,19 +69,16 @@ where = ["src"]
 "" = "src"
 
 [tool.cibuildwheel]
-# Build configuration for cibuildwheel
 build-verbosity = 1
 build = "cp*-manylinux*"
 skip = "*-musllinux* pp*"
-archs = ["x86_64", "i686"]
-
 
 [tool.cibuildwheel.linux]
-# Linux-specific build settings
 before-all = "yum install -y gcc-c++ || apt-get update && apt-get install -y g++ || true"
 environment = { CXXFLAGS = "-std=c++20 -O3 -Wall -Wextra" }
+archs = ["x86_64", "i686"]
 
 [tool.cibuildwheel.macos]
-# macOS-specific build settings
 before-all = "brew install gcc || true"
 environment = { CXXFLAGS = "-std=c++20 -O3 -Wall -Wextra" }
+archs = ["x86_64", "arm64"]
