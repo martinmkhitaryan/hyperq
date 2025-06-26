@@ -48,7 +48,7 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  build-wheels:
+  build-linux-wheels:
     runs-on: ubuntu-latest
     needs: test
     permissions:
@@ -69,11 +69,12 @@ jobs:
           python-versions: "cp310, cp311, cp312, cp313"
           build-verbosity: 1
 
-      - name: Upload wheels to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Upload Linux wheels as artifacts
+        uses: actions/upload-artifact@v4
         with:
-          packages-dir: wheelhouse/
-          skip-existing: true
+          name: linux-wheels
+          path: wheelhouse/
+          retention-days: 1
 
   build-macos-wheels:
     runs-on: macos-latest
@@ -96,11 +97,12 @@ jobs:
           python-versions: "cp310, cp311, cp312, cp313"
           build-verbosity: 1
 
-      - name: Upload macOS wheels to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Upload macOS wheels as artifacts
+        uses: actions/upload-artifact@v4
         with:
-          packages-dir: wheelhouse/
-          skip-existing: true
+          name: macos-wheels
+          path: wheelhouse/
+          retention-days: 1
 
   build-sdist:
     runs-on: ubuntu-latest
@@ -130,8 +132,48 @@ jobs:
         run: |
           python -m build --sdist
 
-      - name: Publish source distribution to PyPI
+      - name: Upload source distribution as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/
+          retention-days: 1
+
+  upload-to-pypi:
+    runs-on: ubuntu-latest
+    needs: [build-linux-wheels, build-macos-wheels, build-sdist]
+    permissions:
+      id-token: write
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/hyperq
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Combine all packages
+        run: |
+          mkdir -p combined-packages
+          # Copy Linux wheels
+          if [ -d "artifacts/linux-wheels" ]; then
+            cp artifacts/linux-wheels/* combined-packages/
+          fi
+          # Copy macOS wheels
+          if [ -d "artifacts/macos-wheels" ]; then
+            cp artifacts/macos-wheels/* combined-packages/
+          fi
+          # Copy source distribution
+          if [ -d "artifacts/sdist" ]; then
+            cp artifacts/sdist/* combined-packages/
+          fi
+          ls -la combined-packages/
+
+      - name: Upload all packages to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: dist/
+          packages-dir: combined-packages/
           skip-existing: true
