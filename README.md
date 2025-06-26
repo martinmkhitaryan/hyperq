@@ -338,10 +338,6 @@ pytest
 
 # Run with coverage
 pytest --cov=hyperq
-
-# Run specific test categories
-pytest -m "not slow"  # Skip slow tests
-pytest -m integration  # Run only integration tests
 ```
 
 ## 📈 Running Benchmarks
