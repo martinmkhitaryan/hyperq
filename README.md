@@ -26,6 +26,7 @@
 
 **Not supported:**
 - ❌ Windows (uses POSIX-specific APIs)
+- ❌ PyPy (uses POSIX-specific APIs and C++ extensions)
 
 ## 🔧 Technical Details
 

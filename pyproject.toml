@@ -71,7 +71,7 @@ where = ["src"]
 [tool.cibuildwheel]
 # Build configuration for cibuildwheel
 build-verbosity = 1
-skip = "*-musllinux*"
+skip = "*-musllinux* *pypy*"
 
 [tool.cibuildwheel.linux]
 # Linux-specific build settings

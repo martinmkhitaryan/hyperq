@@ -66,9 +66,9 @@ jobs:
         uses: pypa/cibuildwheel@v2.16.2
         with:
           platform: linux
-          python-versions: "3.10, 3.11, 3.12, 3.13"
+          python-versions: "cp310, cp311, cp312, cp313"
           build-verbosity: 1
-          skip: "*-musllinux*"
+          skip: "*-musllinux* *pypy*"
 
       - name: Upload wheels to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -94,8 +94,9 @@ jobs:
         uses: pypa/cibuildwheel@v2.16.2
         with:
           platform: macos
-          python-versions: "3.10, 3.11, 3.12, 3.13"
+          python-versions: "cp310, cp311, cp312, cp313"
           build-verbosity: 1
+          skip: "*pypy*"
 
       - name: Upload macOS wheels to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
