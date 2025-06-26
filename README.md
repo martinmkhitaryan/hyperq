@@ -1,6 +1,6 @@
 # HyperQ
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PyPI version](https://badge.fury.io/py/hyperq.svg)](https://badge.fury.io/py/hyperq)
 
@@ -16,7 +16,7 @@
   - `BytesHyperQ`: Specialized queue for bytes data (even faster)
 - **Thread-Safe**: Safe for concurrent access
 - **Unix-like Systems**: Works on Linux and macOS (POSIX-compliant systems)
-- **Python 3.8+**: Modern Python support
+- **Python 3.10+**: Modern Python support
 
 ## ⚠️ Platform Support
 
@@ -354,7 +354,7 @@ python benchmarks/benchmark_bytes_transfering_10p_10c.py
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.10+
 - Cython >= 0.29.0
 - C++ compiler with C++20 support (GCC 8+, Clang 10+)
 - Unix-like system (Linux or macOS)
