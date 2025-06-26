@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hyperq"
-version = "0.0.2"
+version = "0.0.3"
 description = "Hyper-fast queue for Python"
 authors = [
     {name = "Martin Mkhitaryan", email = "mkhitaryan.martin@2000gmail.com"}
@@ -71,7 +71,9 @@ where = ["src"]
 [tool.cibuildwheel]
 # Build configuration for cibuildwheel
 build-verbosity = 1
-skip = "*-musllinux* *pypy*"
+# Only build manylinux wheels for CPython
+manylinux-x86_64-image = "manylinux_2_28"
+manylinux-i686-image = "manylinux_2_28"
 
 [tool.cibuildwheel.linux]
 # Linux-specific build settings

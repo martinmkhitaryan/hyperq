@@ -68,7 +68,6 @@ jobs:
           platform: linux
           python-versions: "cp310, cp311, cp312, cp313"
           build-verbosity: 1
-          skip: "*-musllinux* *pypy*"
 
       - name: Upload wheels to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
@@ -96,7 +95,6 @@ jobs:
           platform: macos
           python-versions: "cp310, cp311, cp312, cp313"
           build-verbosity: 1
-          skip: "*pypy*"
 
       - name: Upload macOS wheels to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
