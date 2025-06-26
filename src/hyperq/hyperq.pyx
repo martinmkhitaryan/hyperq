@@ -22,7 +22,7 @@ cdef extern from "hyperq.hpp":
         void clear() except +
         const string& get_shm_name() except +
         int get_shm_fd() except +
-        bool put(const char* data, size_t len) except +
+        void put(const char* data, size_t len) except +
         char* get(size_t& message_size) except +
 
 cdef class HyperQ:
@@ -72,7 +72,7 @@ cdef class HyperQ:
     def dumps(self, obj):
         return self._dumps_func(obj).tobytes()
     
-    def put(self, data):
+    def put(self, data) -> None:
         cdef:
             char* data_ptr
             Py_ssize_t data_len
@@ -85,7 +85,7 @@ cdef class HyperQ:
             data = self.dumps(data)   
             PyBytes_AsStringAndSize(data, &data_ptr, &data_len)     
         
-        return self._buffer.put(data_ptr, data_len)
+        self._buffer.put(data_ptr, data_len)
     
     def get(self):
         cdef:
@@ -183,13 +183,13 @@ cdef class BytesHyperQ:
         if self._buffer != NULL:
             del self._buffer
     
-    def put(self, bytes data) -> bool:
+    def put(self, bytes data) -> None:
         cdef:
             char* data_ptr
             Py_ssize_t data_len
         
         PyBytes_AsStringAndSize(data, &data_ptr, &data_len)
-        return self._buffer.put(data_ptr, data_len)
+        self._buffer.put(data_ptr, data_len)
     
     def get(self) -> bytes:
         cdef:

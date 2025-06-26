@@ -276,11 +276,11 @@ public:
         return shm_fd;
     }
 
-    bool put(const char *data, size_t len)
+    void put(const char *data, size_t len)
     {
         if (len == 0) [[unlikely]]
         {
-            return true;
+            return;
         }
 
         pthread_mutex_lock(&header->mutex);
@@ -299,7 +299,6 @@ public:
 
         pthread_cond_signal(&header->not_empty);
         pthread_mutex_unlock(&header->mutex);
-        return true;
     }
 
     char* get(size_t &message_size)
