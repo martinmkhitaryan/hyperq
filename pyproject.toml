@@ -71,9 +71,10 @@ where = ["src"]
 [tool.cibuildwheel]
 # Build configuration for cibuildwheel
 build-verbosity = 1
-# Only build manylinux wheels for CPython
-manylinux-x86_64-image = "manylinux_2_28"
-manylinux-i686-image = "manylinux_2_28"
+build = "cp*-manylinux*"
+skip = "*-musllinux* pp*"
+archs = ["x86_64", "i686"]
+
 
 [tool.cibuildwheel.linux]
 # Linux-specific build settings
