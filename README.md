@@ -18,6 +18,33 @@
 - **Unix-like Systems**: Works on Linux and macOS (POSIX-compliant systems)
 - **Python 3.10+**: Modern Python support
 
+## 📋 TODO
+
+- [] **Add `__getstate__` and `__setstate__` methods** to make queue objects picklable
+  - Allow passing queue objects directly to multiprocessing functions
+  - Serialize only the shared memory name/descriptor, not the entire queue state
+  - Enable seamless integration with multiprocessing.Pool and other parallel processing tools
+- [ ] **Add timeout support** for `put()` and `get()` operations
+- [ ] **Add non-blocking operations** (`put_nowait()`, `get_nowait()`)
+  - `put_nowait()`: Non-blocking put that raises `queue.Full` if queue is full
+  - `get_nowait()`: Non-blocking get that raises `queue.Empty` if queue is empty
+  - Useful for polling scenarios where you don't want to block the thread
+- [ ] **Add batch operations** for better performance
+  - `put_many(items)`: Put multiple items in a single operation
+  - `get_many(count)`: Get multiple items in a single operation
+  - `get_all()`: Get all available items at once
+  - Reduces synchronization overhead for bulk operations
+- [ ] **Design decision: Queue name management**
+  - **Option A**: Encapsulate queue names (auto-generate, hide from client)
+  - **Option B**: Client specifies queue names (current approach)
+  - **Option C**: Hybrid approach (auto-generate with optional override)
+- [ ] **Add Windows support** (requires different shared memory implementation)
+- [ ] **Add more comprehensive tests** including stress tests and edge cases
+- [ ] **Add documentation** for advanced usage patterns
+  - **orjson + BytesHyperQ for JSON**: Use `orjson.dumps()` + `BytesHyperQ` for fastest JSON serialization and transfer.
+
+
+
 ## ⚠️ Platform Support
 
 **Currently supported:**
@@ -26,7 +53,7 @@
 
 **Not supported:**
 - ❌ Windows (uses POSIX-specific APIs)
-- ❌ PyPy (uses POSIX-specific APIs and C++ extensions)
+- ❌ PyPy
 
 ## 🔧 Technical Details
 
