@@ -70,12 +70,9 @@ HyperQ uses a ring buffer with double virtual memory mapping to the same physica
 
 ## 📦 Installation
 
-### From PyPI (Coming Soon)
-
-> ⚠️ **Not yet available on PyPI** - Package is still in development
+### From PyPI
 
 ```bash
-# This will be available once the project is ready for release
 pip install hyperq
 ```
 
