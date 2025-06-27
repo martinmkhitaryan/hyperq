@@ -20,7 +20,7 @@
 
 ## 📋 TODO
 
-- [] **Add `__getstate__` and `__setstate__` methods** to make queue objects picklable
+- [ ] **Add `__getstate__` and `__setstate__` methods** to make queue objects picklable
   - Allow passing queue objects directly to multiprocessing functions
   - Serialize only the shared memory name/descriptor, not the entire queue state
   - Enable seamless integration with multiprocessing.Pool and other parallel processing tools
