@@ -274,7 +274,7 @@ public:
 
         pthread_mutex_lock(&header->mutex);
 
-        while (header->size_ + len + sizeof(size_t) > buffer_size)
+        while (len + sizeof(size_t) >= buffer_size - header->size_)
         {
             pthread_cond_wait(&header->not_full, &header->mutex);
         }
