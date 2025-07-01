@@ -23,7 +23,6 @@ struct SharedQueueHeader
     size_t head;
     size_t tail;
     size_t size_;
-    size_t capacity;
     size_t buffer_size;
     
     pthread_mutex_t mutex;
@@ -38,7 +37,6 @@ class HyperQ
 private:
     SharedQueueHeader *header;
     char *buffer;
-    size_t capacity;
     size_t buffer_size;
     int shm_fd;
     int buffer_shm_fd;
@@ -104,26 +102,22 @@ private:
 
     void setup_buffer()
     {
-        const size_t pagesize = getpagesize();
-        const size_t buffer_sz = page_align(buffer_size, pagesize);
+        const size_t buffer_sz = page_align(buffer_size, getpagesize());
         setup_virtual_memory(buffer_sz);
     }
 
 public:
-    HyperQ(size_t cap, const std::string &name) : capacity(cap), is_creator(true)
+    HyperQ(size_t cap, const std::string &name) : is_creator(true)
     {
         if (cap == 0) [[unlikely]]
         {
             throw std::invalid_argument("Capacity must be greater than 0");
         }
 
-        buffer_size = cap;
+        
         init_header();
 
-        const size_t pagesize = getpagesize();
-        const size_t aligned_buffer_size = page_align(buffer_size, pagesize);
-        const size_t header_shared_memory_size = page_align(header_size, pagesize);
-        const size_t buffer_shared_memory_size = page_align(aligned_buffer_size, pagesize);
+        buffer_size = page_align(cap, getpagesize());
 
         shm_name = name;
 
@@ -139,11 +133,11 @@ public:
             throw std::runtime_error("shm_open header failed: " + std::string(strerror(errno)));
         }
 
-        if (ftruncate(shm_fd, header_shared_memory_size) == -1) [[unlikely]]
+        if (ftruncate(shm_fd, header_size) == -1) [[unlikely]]
         {
             close(shm_fd);
             shm_unlink(shm_name.c_str());
-            throw std::runtime_error("ftruncate header failed: " + std::string(strerror(errno)) + " (size=" + std::to_string(header_shared_memory_size) + ")");
+            throw std::runtime_error("ftruncate header failed: " + std::string(strerror(errno)) + " (size=" + std::to_string(header_size) + ")");
         }
 
         buffer_shm_fd = shm_open(buffer_name, O_CREAT | O_RDWR, 0666);
@@ -154,13 +148,13 @@ public:
             throw std::runtime_error("shm_open buffer failed: " + std::string(strerror(errno)));
         }
 
-        if (ftruncate(buffer_shm_fd, buffer_shared_memory_size) == -1) [[unlikely]]
+        if (ftruncate(buffer_shm_fd, buffer_size) == -1) [[unlikely]]
         {
             close(shm_fd);
             close(buffer_shm_fd);
             shm_unlink(shm_name.c_str());
             shm_unlink(buffer_name);
-            throw std::runtime_error("ftruncate buffer failed: " + std::string(strerror(errno)) + " (size=" + std::to_string(buffer_shared_memory_size) + ")");
+            throw std::runtime_error("ftruncate buffer failed: " + std::string(strerror(errno)) + " (size=" + std::to_string(buffer_size) + ")");
         }
 
         map_header();
@@ -168,7 +162,6 @@ public:
         header->head = 0;
         header->tail = 0;
         header->size_ = 0;
-        header->capacity = capacity;
         header->buffer_size = buffer_size;
         strncpy(header->buffer_shm_name, buffer_name, sizeof(header->buffer_shm_name) - 1);
         header->buffer_shm_name[sizeof(header->buffer_shm_name) - 1] = '\0';
@@ -189,7 +182,6 @@ public:
 
         init_header();
         map_header();
-        capacity = header->capacity;
         buffer_size = header->buffer_size;
         buffer_shm_name = header->buffer_shm_name;
 
@@ -207,8 +199,7 @@ public:
     {
         if (header != nullptr)
         {
-            const size_t pagesize = getpagesize();
-            const size_t buffer_sz = page_align(buffer_size, pagesize);
+            const size_t buffer_sz = page_align(buffer_size, getpagesize());
 
             if (buffer != nullptr)
             {
@@ -231,11 +222,10 @@ public:
     HyperQ &operator=(const HyperQ &) = delete;
 
     HyperQ(HyperQ &&other) noexcept
-        : header(other.header), buffer(other.buffer), capacity(other.capacity),
-          buffer_size(other.buffer_size), shm_fd(other.shm_fd),
-          buffer_shm_fd(other.buffer_shm_fd), shm_name(std::move(other.shm_name)),
-          buffer_shm_name(std::move(other.buffer_shm_name)), is_creator(other.is_creator),
-          header_size(other.header_size)
+        : header(other.header), buffer(other.buffer), buffer_size(other.buffer_size),
+          shm_fd(other.shm_fd), buffer_shm_fd(other.buffer_shm_fd),
+          shm_name(std::move(other.shm_name)), buffer_shm_name(std::move(other.buffer_shm_name)),
+          is_creator(other.is_creator), header_size(other.header_size)
     {
         other.header = nullptr;
         other.buffer = nullptr;
@@ -250,7 +240,6 @@ public:
             this->~HyperQ();
             header = other.header;
             buffer = other.buffer;
-            capacity = other.capacity;
             buffer_size = other.buffer_size;
             shm_fd = other.shm_fd;
             buffer_shm_fd = other.buffer_shm_fd;
@@ -352,9 +341,9 @@ public:
         return result;
     }
 
-    size_t get_capacity() const
+    size_t get_buffer_size() const
     {
-        return capacity;
+        return buffer_size;
     }
 
     size_t available() const

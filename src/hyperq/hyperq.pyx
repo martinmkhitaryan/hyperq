@@ -17,7 +17,7 @@ cdef extern from "hyperq.hpp":
         bool empty() except +
         bool full() except +
         size_t size() except +
-        size_t get_capacity() except +
+        size_t get_buffer_size() except +
         size_t available() except +
         void clear() except +
         const string& get_shm_name() except +
@@ -120,8 +120,8 @@ cdef class HyperQ:
         return self._buffer.size()
     
     @property
-    def capacity(self):
-        return self._buffer.get_capacity()
+    def buffer_size(self):
+        return self._buffer.get_buffer_size()
     
     @property
     def available(self):
@@ -145,7 +145,7 @@ cdef class HyperQ:
         return not self.empty
     
     def __repr__(self):
-        return f"HyperQ(capacity={self.capacity}, size={self.size}, empty={self.empty}, full={self.full})" 
+        return f"HyperQ(capacity={self.buffer_size}, size={self.size}, empty={self.empty}, full={self.full})" 
 
 
 cdef class BytesHyperQ:
@@ -220,8 +220,8 @@ cdef class BytesHyperQ:
         return self._buffer.size()
     
     @property
-    def capacity(self):
-        return self._buffer.get_capacity()
+    def buffer_size(self):
+        return self._buffer.get_buffer_size()
     
     @property
     def available(self):
@@ -245,4 +245,4 @@ cdef class BytesHyperQ:
         return not self.empty
     
     def __repr__(self):
-        return f"BytesHyperQ(capacity={self.capacity}, size={self.size}, empty={self.empty}, full={self.full})" 
+        return f"BytesHyperQ(capacity={self.buffer_size}, size={self.size}, empty={self.empty}, full={self.full})" 
