@@ -122,11 +122,8 @@ public:
         buffer_size = page_align(cap, getpagesize());
 
         shm_name = name;
-
         char buffer_name[32];
-        struct timespec ts;
-        clock_gettime(CLOCK_MONOTONIC, &ts);
-        snprintf(buffer_name, sizeof(buffer_name), "/hqb%x%lx%lx", getpid(), (long)ts.tv_sec, (long)ts.tv_nsec);
+        snprintf(buffer_name, sizeof(buffer_name), "/b_%s", shm_name.c_str());
         buffer_shm_name = buffer_name;
 
         shm_fd = shm_open(shm_name.c_str(), O_CREAT | O_RDWR, 0666);
@@ -195,6 +192,7 @@ public:
             throw std::runtime_error("shm_open buffer failed");
         }
 
+        // Increment reference count atomically
         pthread_mutex_lock(&header->mutex);
         header->ref_count++;
         pthread_mutex_unlock(&header->mutex);
@@ -213,12 +211,14 @@ public:
                 munmap(buffer, 2 * buffer_sz);
             }
 
+            // Check reference count before unmapping header
             bool should_unlink = false;
             pthread_mutex_lock(&header->mutex);
             header->ref_count--;
             should_unlink = (header->ref_count == 0);
+            size_t final_ref_count = header->ref_count;
             pthread_mutex_unlock(&header->mutex);
-
+            
             munmap(header, header_size);
             close(shm_fd);
             close(buffer_shm_fd);
@@ -285,7 +285,7 @@ public:
         }
 
         pthread_mutex_lock(&header->mutex);
-
+        
         while (len + sizeof(size_t) >= buffer_size - header->size_)
         {
             pthread_cond_wait(&header->not_full, &header->mutex);
@@ -305,7 +305,7 @@ public:
     char* get(size_t &message_size)
     {
         pthread_mutex_lock(&header->mutex);
-
+        
         while (header->size_ == 0)
         {
             pthread_cond_wait(&header->not_empty, &header->mutex);

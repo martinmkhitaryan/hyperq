@@ -4,6 +4,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PyPI version](https://badge.fury.io/py/hyperq.svg)](https://badge.fury.io/py/hyperq)
 
+> ⚠️ **Warning: This package is not ready for production usage yet.** It's currently in active development and may have bugs, especially with multiprocessing scenarios using the spawn start method.
+
 **Hyper-fast queue for Python** - A high-performance queue implementation using Cython and C++ for inter-process communication.
 
 ## 🚀 Features
@@ -20,6 +22,9 @@
 
 ## 📋 TODO
 
+- [ ] **Fix multiprocessing spawn start method bug** - Critical issue with multiple consumers/producers
+  - Queue doesn't work properly when `multiprocessing.set_start_method('spawn')` is used
+  - Affects scenarios with multiple consumers and producers
 - [ ] **Add `__getstate__` and `__setstate__` methods** to make queue objects picklable
   - Allow passing queue objects directly to multiprocessing functions
   - Serialize only the shared memory name/descriptor, not the entire queue state
@@ -426,7 +431,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Email**: mkhitaryan.martin@2000gmail.com
 
 ## 🔄 Version History
-
+- **0.0.7**: Replaced is_creator logic with ref count logic for better shared memory management; identified and documented issue with multiprocessing spawn start method not working properly with multiple consumers and producers
+- **0.0.6**: Fix cibuildwheel configurations.
 - **0.0.5**: Added platform-specific build and skip patterns for Linux and macOS; improved cibuildwheel configuration with separate build targets for manylinux and macosx wheels
 - **0.0.4**: Fixed cibuildwheel configuration for proper multi-platform wheel builds; added architecture-specific settings for Linux (x86_64/i686) and macOS (x86_64/arm64);
 - **0.0.3**: Fixed cibuildwheel configuration for proper linux wheel build;
