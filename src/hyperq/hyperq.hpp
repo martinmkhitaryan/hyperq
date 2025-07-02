@@ -25,6 +25,9 @@ struct SharedQueueHeader
     size_t size_;
     size_t buffer_size;
     
+    // Reference counting for shared memory cleanup
+    size_t ref_count;
+
     pthread_mutex_t mutex;
     pthread_cond_t not_empty;
     pthread_cond_t not_full;
@@ -42,7 +45,6 @@ private:
     int buffer_shm_fd;
     std::string shm_name;
     std::string buffer_shm_name;
-    bool is_creator;
     size_t header_size;
 
     void init_sync_objects()
@@ -107,7 +109,7 @@ private:
     }
 
 public:
-    HyperQ(size_t cap, const std::string &name) : is_creator(true)
+    HyperQ(size_t cap, const std::string &name)
     {
         if (cap == 0) [[unlikely]]
         {
@@ -163,6 +165,7 @@ public:
         header->tail = 0;
         header->size_ = 0;
         header->buffer_size = buffer_size;
+        header->ref_count = 1;  // First instance
         strncpy(header->buffer_shm_name, buffer_name, sizeof(header->buffer_shm_name) - 1);
         header->buffer_shm_name[sizeof(header->buffer_shm_name) - 1] = '\0';
 
@@ -170,7 +173,7 @@ public:
         setup_buffer();
     }
 
-    HyperQ(const std::string &name) : is_creator(false)
+    HyperQ(const std::string &name)
     {
         shm_name = name;
 
@@ -192,6 +195,10 @@ public:
             throw std::runtime_error("shm_open buffer failed");
         }
 
+        pthread_mutex_lock(&header->mutex);
+        header->ref_count++;
+        pthread_mutex_unlock(&header->mutex);
+
         setup_buffer();
     }
 
@@ -206,11 +213,17 @@ public:
                 munmap(buffer, 2 * buffer_sz);
             }
 
+            bool should_unlink = false;
+            pthread_mutex_lock(&header->mutex);
+            header->ref_count--;
+            should_unlink = (header->ref_count == 0);
+            pthread_mutex_unlock(&header->mutex);
+
             munmap(header, header_size);
             close(shm_fd);
             close(buffer_shm_fd);
 
-            if (is_creator)
+            if (should_unlink)
             {
                 shm_unlink(shm_name.c_str());
                 shm_unlink(buffer_shm_name.c_str());
@@ -225,7 +238,7 @@ public:
         : header(other.header), buffer(other.buffer), buffer_size(other.buffer_size),
           shm_fd(other.shm_fd), buffer_shm_fd(other.buffer_shm_fd),
           shm_name(std::move(other.shm_name)), buffer_shm_name(std::move(other.buffer_shm_name)),
-          is_creator(other.is_creator), header_size(other.header_size)
+          header_size(other.header_size)
     {
         other.header = nullptr;
         other.buffer = nullptr;
@@ -245,7 +258,6 @@ public:
             buffer_shm_fd = other.buffer_shm_fd;
             shm_name = std::move(other.shm_name);
             buffer_shm_name = std::move(other.buffer_shm_name);
-            is_creator = other.is_creator;
             header_size = other.header_size;
             other.header = nullptr;
             other.buffer = nullptr;
