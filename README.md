@@ -172,148 +172,732 @@ data = queue.get()  # b"Hello, World!"
 HyperQ is designed for high-performance scenarios. Here are some benchmark results:
 
 **Hardware:**
-- **CPU**: Intel(R) Core(TM) i9-9980HK CPU @ 2.40GHz
-- **Memory**: 16GB
-- **OS**: macOS 15.3.1
-- **Python**: 3.10
+- **CPU**: Intel® Core™ i3-12100 
+- **Memory**: 8GB
+- **OS**: Ubuntu 22.04 / Virtual Box
+- **Python**: 3.12
 
 
-### 1 Producer, 1 Consumer
+### Benchmark bytes transfering.
 ```bash
 Running bytes performance benchmarks...
-================================================================
+================================================================================
 
-Results for 100000 messages of 32 bytes:
-Queue Type               Total Time (s)    Latency (ms)    Throughput (items/s)
----------------------  ----------------  --------------  ----------------------
-BytesHyperQ                    0.119976      0.00119976                  833499
-HyperQ                         0.421588      0.00421588                  237198
-multiprocessing.Queue          2.09399       0.0209399                    47755
-faster-fifo                    2.36328       0.0236328                    42314
-🏆 Fastest: BytesHyperQ with 833,499 items/s
-   3.5x faster than HyperQ
-   17.5x faster than multiprocessing.Queue
-   19.7x faster than faster-fifo
+Results for 100,000 messages of 32 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.018           0.000           5,528,243           
+HyperQ               0.090           0.001           1,106,593           
+multiprocessing.Queue 0.334           0.003           299,499             
+faster-fifo          0.406           0.004           246,330             
 
-================================================================
+🏆 Fastest: BytesHyperQ with 5,528,243 items/s
+   5.0x faster than HyperQ
+   18.5x faster than multiprocessing.Queue
+   22.4x faster than faster-fifo
+
+================================================================================
 Sleeping 2 seconds before next test configuration...
 
-Results for 100000 messages of 64 bytes:
-Queue Type               Total Time (s)    Latency (ms)    Throughput (items/s)
----------------------  ----------------  --------------  ----------------------
-BytesHyperQ                    0.124732      0.00124732                  801717
-HyperQ                         0.474716      0.00474716                  210652
-faster-fifo                    1.67101       0.0167101                    59843
-multiprocessing.Queue          2.20561       0.0220561                    45338
-🏆 Fastest: BytesHyperQ with 801,717 items/s
-   3.8x faster than HyperQ
-   13.4x faster than faster-fifo
-   17.7x faster than multiprocessing.Queue
+Results for 100,000 messages of 64 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.020           0.000           5,067,022           
+HyperQ               0.090           0.001           1,105,261           
+multiprocessing.Queue 0.388           0.004           257,635             
+faster-fifo          0.397           0.004           251,805             
 
-================================================================
+🏆 Fastest: BytesHyperQ with 5,067,022 items/s
+   4.6x faster than HyperQ
+   19.7x faster than multiprocessing.Queue
+   20.1x faster than faster-fifo
+
+================================================================================
 Sleeping 2 seconds before next test configuration...
 
-Results for 100000 messages of 128 bytes:
-Queue Type               Total Time (s)    Latency (ms)    Throughput (items/s)
----------------------  ----------------  --------------  ----------------------
-BytesHyperQ                    0.116276      0.00116276                  860024
-HyperQ                         0.499545      0.00499545                  200182
-multiprocessing.Queue          1.99662       0.0199662                    50084
-faster-fifo                    2.65151       0.0265151                    37714
-🏆 Fastest: BytesHyperQ with 860,024 items/s
-   4.3x faster than HyperQ
-   17.2x faster than multiprocessing.Queue
-   22.8x faster than faster-fifo
+Results for 100,000 messages of 128 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.025           0.000           3,988,545           
+HyperQ               0.102           0.001           984,694             
+multiprocessing.Queue 0.332           0.003           301,471             
+faster-fifo          0.402           0.004           248,764             
 
-================================================================
+🏆 Fastest: BytesHyperQ with 3,988,545 items/s
+   4.1x faster than HyperQ
+   13.2x faster than multiprocessing.Queue
+   16.0x faster than faster-fifo
+
+================================================================================
 Sleeping 2 seconds before next test configuration...
 
-Results for 100000 messages of 256 bytes:
-Queue Type               Total Time (s)    Latency (ms)    Throughput (items/s)
----------------------  ----------------  --------------  ----------------------
-BytesHyperQ                    0.235679      0.00235679                  424305
-HyperQ                         0.837711      0.00837711                  119372
-multiprocessing.Queue          2.32011       0.0232011                    43101
-faster-fifo                    2.68104       0.0268104                    37298
-🏆 Fastest: BytesHyperQ with 424,305 items/s
-   3.6x faster than HyperQ
-   9.8x faster than multiprocessing.Queue
-   11.4x faster than faster-fifo
+Results for 100,000 messages of 256 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.030           0.000           3,280,452           
+HyperQ               0.098           0.001           1,024,640           
+multiprocessing.Queue 0.344           0.003           290,311             
+faster-fifo          0.395           0.004           253,071             
 
-================================================================
-Sleeping 2 seconds before next test configuration...
-
-Results for 100000 messages of 512 bytes:
-Queue Type               Total Time (s)    Latency (ms)    Throughput (items/s)
----------------------  ----------------  --------------  ----------------------
-BytesHyperQ                    0.251292      0.00251292                  397943
-HyperQ                         0.770943      0.00770943                  129711
-multiprocessing.Queue          2.08766       0.0208766                    47900
-faster-fifo                    2.16858       0.0216858                    46113
-🏆 Fastest: BytesHyperQ with 397,943 items/s
-   3.1x faster than HyperQ
-   8.3x faster than multiprocessing.Queue
-   8.6x faster than faster-fifo
-
-================================================================
-Sleeping 2 seconds before next test configuration...
-
-Results for 100000 messages of 1024 bytes:
-Queue Type               Total Time (s)    Latency (ms)    Throughput (items/s)
----------------------  ----------------  --------------  ----------------------
-BytesHyperQ                    0.209373      0.00209373                  477616
-HyperQ                         0.664122      0.00664122                  150574
-multiprocessing.Queue          2.28728       0.0228728                    43720
-faster-fifo                    2.30807       0.0230807                    43326
-🏆 Fastest: BytesHyperQ with 477,616 items/s
+🏆 Fastest: BytesHyperQ with 3,280,452 items/s
    3.2x faster than HyperQ
-   10.9x faster than multiprocessing.Queue
-   11.0x faster than faster-fifo
+   11.3x faster than multiprocessing.Queue
+   13.0x faster than faster-fifo
 
-================================================================
+================================================================================
 Sleeping 2 seconds before next test configuration...
 
-Results for 100000 messages of 4096 bytes:
-Queue Type               Total Time (s)    Latency (ms)    Throughput (items/s)
----------------------  ----------------  --------------  ----------------------
-BytesHyperQ                    0.419936      0.00419936                  238131
-HyperQ                         1.0191        0.010191                     98126
-multiprocessing.Queue          2.18819       0.0218819                    45699
-faster-fifo                    3.13527       0.0313527                    31895
-🏆 Fastest: BytesHyperQ with 238,131 items/s
-   2.4x faster than HyperQ
-   5.2x faster than multiprocessing.Queue
-   7.5x faster than faster-fifo
+Results for 100,000 messages of 512 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.028           0.000           3,550,212           
+HyperQ               0.105           0.001           956,745             
+multiprocessing.Queue 0.357           0.004           279,993             
+faster-fifo          0.420           0.004           238,251             
 
-================================================================
+🏆 Fastest: BytesHyperQ with 3,550,212 items/s
+   3.7x faster than HyperQ
+   12.7x faster than multiprocessing.Queue
+   14.9x faster than faster-fifo
+
+================================================================================
 Sleeping 2 seconds before next test configuration...
 
-Results for 100000 messages of 8192 bytes:
-Queue Type               Total Time (s)    Latency (ms)    Throughput (items/s)
----------------------  ----------------  --------------  ----------------------
-BytesHyperQ                    0.701695      0.00701695                  142512
-HyperQ                         1.34373       0.0134373                    74419
-multiprocessing.Queue          2.95495       0.0295495                    33841
-faster-fifo                    3.40265       0.0340265                    29388
-🏆 Fastest: BytesHyperQ with 142,512 items/s
+Results for 100,000 messages of 1024 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.042           0.000           2,390,645           
+HyperQ               0.109           0.001           917,085             
+multiprocessing.Queue 0.379           0.004           263,922             
+faster-fifo          0.413           0.004           241,983             
+
+🏆 Fastest: BytesHyperQ with 2,390,645 items/s
+   2.6x faster than HyperQ
+   9.1x faster than multiprocessing.Queue
+   9.9x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 4096 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.077           0.001           1,296,410           
+HyperQ               0.153           0.002           653,955             
+multiprocessing.Queue 0.420           0.004           238,116             
+faster-fifo          0.437           0.004           228,823             
+
+🏆 Fastest: BytesHyperQ with 1,296,410 items/s
+   2.0x faster than HyperQ
+   5.4x faster than multiprocessing.Queue
+   5.7x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 8192 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.107           0.001           936,460             
+HyperQ               0.203           0.002           492,091             
+multiprocessing.Queue 0.497           0.005           201,165             
+faster-fifo          0.539           0.005           185,473             
+
+🏆 Fastest: BytesHyperQ with 936,460 items/s
    1.9x faster than HyperQ
-   4.2x faster than multiprocessing.Queue
-   4.8x faster than faster-fifo
+   4.7x faster than multiprocessing.Queue
+   5.0x faster than faster-fifo
 
-================================================================
+================================================================================
 Sleeping 2 seconds before next test configuration...
 
-Results for 100000 messages of 16384 bytes:
-Queue Type               Total Time (s)    Latency (ms)    Throughput (items/s)
----------------------  ----------------  --------------  ----------------------
-BytesHyperQ                     1.22369       0.0122369                   81720
-HyperQ                          1.62568       0.0162568                   61512
-faster-fifo                     3.81159       0.0381159                   26235
-multiprocessing.Queue           5.12029       0.0512029                   19530
-🏆 Fastest: BytesHyperQ with 81,720 items/s
+Results for 100,000 messages of 16384 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.189           0.002           528,889             
+HyperQ               0.303           0.003           329,876             
+multiprocessing.Queue 0.658           0.007           152,017             
+faster-fifo          0.762           0.008           131,168             
+
+🏆 Fastest: BytesHyperQ with 528,889 items/s
+   1.6x faster than HyperQ
+   3.5x faster than multiprocessing.Queue
+   4.0x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 32768 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.375           0.004           266,432             
+HyperQ               0.484           0.005           206,720             
+faster-fifo          0.939           0.009           106,544             
+multiprocessing.Queue 1.053           0.011           94,985              
+
+🏆 Fastest: BytesHyperQ with 266,432 items/s
    1.3x faster than HyperQ
-   3.1x faster than faster-fifo
-   4.2x faster than multiprocessing.Queue
+   2.5x faster than faster-fifo
+   2.8x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 32 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.097           0.000           4,142,198           
+HyperQ               0.313           0.001           1,276,678           
+faster-fifo          0.863           0.002           463,335             
+multiprocessing.Queue 2.907           0.007           137,604             
+
+🏆 Fastest: BytesHyperQ with 4,142,198 items/s
+   3.2x faster than HyperQ
+   8.9x faster than faster-fifo
+   30.1x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 64 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.108           0.000           3,713,089           
+HyperQ               0.336           0.001           1,189,575           
+faster-fifo          0.847           0.002           472,108             
+multiprocessing.Queue 2.928           0.007           136,622             
+
+🏆 Fastest: BytesHyperQ with 3,713,089 items/s
+   3.1x faster than HyperQ
+   7.9x faster than faster-fifo
+   27.2x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 128 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.104           0.000           3,838,310           
+HyperQ               0.293           0.001           1,365,044           
+faster-fifo          0.880           0.002           454,557             
+multiprocessing.Queue 2.968           0.007           134,779             
+
+🏆 Fastest: BytesHyperQ with 3,838,310 items/s
+   2.8x faster than HyperQ
+   8.4x faster than faster-fifo
+   28.5x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 256 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.121           0.000           3,306,829           
+HyperQ               0.346           0.001           1,156,464           
+faster-fifo          0.848           0.002           471,452             
+multiprocessing.Queue 3.024           0.008           132,281             
+
+🏆 Fastest: BytesHyperQ with 3,306,829 items/s
+   2.9x faster than HyperQ
+   7.0x faster than faster-fifo
+   25.0x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 512 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.139           0.000           2,870,961           
+HyperQ               0.413           0.001           968,493             
+faster-fifo          0.892           0.002           448,522             
+multiprocessing.Queue 3.143           0.008           127,257             
+
+🏆 Fastest: BytesHyperQ with 2,870,961 items/s
+   3.0x faster than HyperQ
+   6.4x faster than faster-fifo
+   22.6x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 1024 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.209           0.001           1,918,401           
+HyperQ               0.546           0.001           732,611             
+faster-fifo          0.929           0.002           430,677             
+multiprocessing.Queue 3.299           0.008           121,240             
+
+🏆 Fastest: BytesHyperQ with 1,918,401 items/s
+   2.6x faster than HyperQ
+   4.5x faster than faster-fifo
+   15.8x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 4096 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.400           0.001           1,001,018           
+HyperQ               0.745           0.002           536,564             
+faster-fifo          1.176           0.003           340,031             
+multiprocessing.Queue 4.032           0.010           99,196              
+
+🏆 Fastest: BytesHyperQ with 1,001,018 items/s
+   1.9x faster than HyperQ
+   2.9x faster than faster-fifo
+   10.1x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 8192 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.679           0.002           589,081             
+HyperQ               1.111           0.003           359,917             
+faster-fifo          1.554           0.004           257,363             
+multiprocessing.Queue 4.742           0.012           84,353              
+
+🏆 Fastest: BytesHyperQ with 589,081 items/s
+   1.6x faster than HyperQ
+   2.3x faster than faster-fifo
+   7.0x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 16384 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          1.278           0.003           313,053             
+HyperQ               1.765           0.004           226,633             
+faster-fifo          2.442           0.006           163,817             
+multiprocessing.Queue 6.288           0.016           63,613              
+
+🏆 Fastest: BytesHyperQ with 313,053 items/s
+   1.4x faster than HyperQ
+   1.9x faster than faster-fifo
+   4.9x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 32768 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          2.374           0.006           168,526             
+HyperQ               2.887           0.007           138,536             
+faster-fifo          3.804           0.010           105,154             
+multiprocessing.Queue 10.354          0.026           38,634              
+
+🏆 Fastest: BytesHyperQ with 168,526 items/s
+   1.2x faster than HyperQ
+   1.6x faster than faster-fifo
+   4.4x faster than multiprocessing.Queue
+Running bytes performance benchmarks...
+================================================================================
+
+Results for 100,000 messages of 32 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.018           0.000           5,528,243           
+HyperQ               0.090           0.001           1,106,593           
+multiprocessing.Queue 0.334           0.003           299,499             
+faster-fifo          0.406           0.004           246,330             
+
+🏆 Fastest: BytesHyperQ with 5,528,243 items/s
+   5.0x faster than HyperQ
+   18.5x faster than multiprocessing.Queue
+   22.4x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 64 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.020           0.000           5,067,022           
+HyperQ               0.090           0.001           1,105,261           
+multiprocessing.Queue 0.388           0.004           257,635             
+faster-fifo          0.397           0.004           251,805             
+
+🏆 Fastest: BytesHyperQ with 5,067,022 items/s
+   4.6x faster than HyperQ
+   19.7x faster than multiprocessing.Queue
+   20.1x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 128 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.025           0.000           3,988,545           
+HyperQ               0.102           0.001           984,694             
+multiprocessing.Queue 0.332           0.003           301,471             
+faster-fifo          0.402           0.004           248,764             
+
+🏆 Fastest: BytesHyperQ with 3,988,545 items/s
+   4.1x faster than HyperQ
+   13.2x faster than multiprocessing.Queue
+   16.0x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 256 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.030           0.000           3,280,452           
+HyperQ               0.098           0.001           1,024,640           
+multiprocessing.Queue 0.344           0.003           290,311             
+faster-fifo          0.395           0.004           253,071             
+
+🏆 Fastest: BytesHyperQ with 3,280,452 items/s
+   3.2x faster than HyperQ
+   11.3x faster than multiprocessing.Queue
+   13.0x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 512 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.028           0.000           3,550,212           
+HyperQ               0.105           0.001           956,745             
+multiprocessing.Queue 0.357           0.004           279,993             
+faster-fifo          0.420           0.004           238,251             
+
+🏆 Fastest: BytesHyperQ with 3,550,212 items/s
+   3.7x faster than HyperQ
+   12.7x faster than multiprocessing.Queue
+   14.9x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 1024 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.042           0.000           2,390,645           
+HyperQ               0.109           0.001           917,085             
+multiprocessing.Queue 0.379           0.004           263,922             
+faster-fifo          0.413           0.004           241,983             
+
+🏆 Fastest: BytesHyperQ with 2,390,645 items/s
+   2.6x faster than HyperQ
+   9.1x faster than multiprocessing.Queue
+   9.9x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 4096 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.077           0.001           1,296,410           
+HyperQ               0.153           0.002           653,955             
+multiprocessing.Queue 0.420           0.004           238,116             
+faster-fifo          0.437           0.004           228,823             
+
+🏆 Fastest: BytesHyperQ with 1,296,410 items/s
+   2.0x faster than HyperQ
+   5.4x faster than multiprocessing.Queue
+   5.7x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 8192 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.107           0.001           936,460             
+HyperQ               0.203           0.002           492,091             
+multiprocessing.Queue 0.497           0.005           201,165             
+faster-fifo          0.539           0.005           185,473             
+
+🏆 Fastest: BytesHyperQ with 936,460 items/s
+   1.9x faster than HyperQ
+   4.7x faster than multiprocessing.Queue
+   5.0x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 16384 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.189           0.002           528,889             
+HyperQ               0.303           0.003           329,876             
+multiprocessing.Queue 0.658           0.007           152,017             
+faster-fifo          0.762           0.008           131,168             
+
+🏆 Fastest: BytesHyperQ with 528,889 items/s
+   1.6x faster than HyperQ
+   3.5x faster than multiprocessing.Queue
+   4.0x faster than faster-fifo
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 32768 bytes per producer:
+Total messages: 100,000 (1 producers, 1 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.375           0.004           266,432             
+HyperQ               0.484           0.005           206,720             
+faster-fifo          0.939           0.009           106,544             
+multiprocessing.Queue 1.053           0.011           94,985              
+
+🏆 Fastest: BytesHyperQ with 266,432 items/s
+   1.3x faster than HyperQ
+   2.5x faster than faster-fifo
+   2.8x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 32 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.097           0.000           4,142,198           
+HyperQ               0.313           0.001           1,276,678           
+faster-fifo          0.863           0.002           463,335             
+multiprocessing.Queue 2.907           0.007           137,604             
+
+🏆 Fastest: BytesHyperQ with 4,142,198 items/s
+   3.2x faster than HyperQ
+   8.9x faster than faster-fifo
+   30.1x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 64 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.108           0.000           3,713,089           
+HyperQ               0.336           0.001           1,189,575           
+faster-fifo          0.847           0.002           472,108             
+multiprocessing.Queue 2.928           0.007           136,622             
+
+🏆 Fastest: BytesHyperQ with 3,713,089 items/s
+   3.1x faster than HyperQ
+   7.9x faster than faster-fifo
+   27.2x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 128 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.104           0.000           3,838,310           
+HyperQ               0.293           0.001           1,365,044           
+faster-fifo          0.880           0.002           454,557             
+multiprocessing.Queue 2.968           0.007           134,779             
+
+🏆 Fastest: BytesHyperQ with 3,838,310 items/s
+   2.8x faster than HyperQ
+   8.4x faster than faster-fifo
+   28.5x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 256 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.121           0.000           3,306,829           
+HyperQ               0.346           0.001           1,156,464           
+faster-fifo          0.848           0.002           471,452             
+multiprocessing.Queue 3.024           0.008           132,281             
+
+🏆 Fastest: BytesHyperQ with 3,306,829 items/s
+   2.9x faster than HyperQ
+   7.0x faster than faster-fifo
+   25.0x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 512 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.139           0.000           2,870,961           
+HyperQ               0.413           0.001           968,493             
+faster-fifo          0.892           0.002           448,522             
+multiprocessing.Queue 3.143           0.008           127,257             
+
+🏆 Fastest: BytesHyperQ with 2,870,961 items/s
+   3.0x faster than HyperQ
+   6.4x faster than faster-fifo
+   22.6x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 1024 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.209           0.001           1,918,401           
+HyperQ               0.546           0.001           732,611             
+faster-fifo          0.929           0.002           430,677             
+multiprocessing.Queue 3.299           0.008           121,240             
+
+🏆 Fastest: BytesHyperQ with 1,918,401 items/s
+   2.6x faster than HyperQ
+   4.5x faster than faster-fifo
+   15.8x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 4096 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.400           0.001           1,001,018           
+HyperQ               0.745           0.002           536,564             
+faster-fifo          1.176           0.003           340,031             
+multiprocessing.Queue 4.032           0.010           99,196              
+
+🏆 Fastest: BytesHyperQ with 1,001,018 items/s
+   1.9x faster than HyperQ
+   2.9x faster than faster-fifo
+   10.1x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 8192 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          0.679           0.002           589,081             
+HyperQ               1.111           0.003           359,917             
+faster-fifo          1.554           0.004           257,363             
+multiprocessing.Queue 4.742           0.012           84,353              
+
+🏆 Fastest: BytesHyperQ with 589,081 items/s
+   1.6x faster than HyperQ
+   2.3x faster than faster-fifo
+   7.0x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 16384 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          1.278           0.003           313,053             
+HyperQ               1.765           0.004           226,633             
+faster-fifo          2.442           0.006           163,817             
+multiprocessing.Queue 6.288           0.016           63,613              
+
+🏆 Fastest: BytesHyperQ with 313,053 items/s
+   1.4x faster than HyperQ
+   1.9x faster than faster-fifo
+   4.9x faster than multiprocessing.Queue
+
+================================================================================
+Sleeping 2 seconds before next test configuration...
+
+Results for 100,000 messages of 32768 bytes per producer:
+Total messages: 400,000 (4 producers, 4 consumers)
+--------------------------------------------------------------------------------
+Queue Type           Total Time (s)  Latency (ms)    Throughput (items/s)
+--------------------------------------------------------------------------------
+BytesHyperQ          2.374           0.006           168,526             
+HyperQ               2.887           0.007           138,536             
+faster-fifo          3.804           0.010           105,154             
+multiprocessing.Queue 10.354          0.026           38,634              
+
+🏆 Fastest: BytesHyperQ with 168,526 items/s
+   1.2x faster than HyperQ
+   1.6x faster than faster-fifo
+   4.4x faster than multiprocessing.Queue
 ```
 
 *Results may vary depending on hardware and system configuration.*
