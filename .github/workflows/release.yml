@@ -48,9 +48,17 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  build-linux-wheels:
-    runs-on: ubuntu-latest
+  build-wheels:
+    runs-on: ${{ matrix.os }}
     needs: test
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: macos-latest
+            platform: macos
     permissions:
       id-token: write
 
@@ -62,37 +70,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Linux wheels
+      - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.2
 
-      - name: Upload Linux wheels as artifacts
+      - name: Upload wheels as artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: linux-wheels
-          path: wheelhouse/
-          retention-days: 1
-
-  build-macos-wheels:
-    runs-on: macos-latest
-    needs: test
-    permissions:
-      id-token: write
-
-    environment:
-      name: pypi
-      url: https://pypi.org/p/hyperq
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build macOS wheels
-        uses: pypa/cibuildwheel@v2.16.2
-
-      - name: Upload macOS wheels as artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-wheels
+          name: ${{ matrix.platform }}-wheels
           path: wheelhouse/
           retention-days: 1
 
@@ -133,7 +117,7 @@ jobs:
 
   upload-to-pypi:
     runs-on: ubuntu-latest
-    needs: [build-linux-wheels, build-macos-wheels, build-sdist]
+    needs: [build-wheels, build-sdist]
     permissions:
       id-token: write
 
