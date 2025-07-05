@@ -106,7 +106,7 @@ import multiprocessing as mp
 from hyperq import HyperQ, BytesHyperQ
 
 # Create a queue with 1MB capacity
-queue = HyperQ(1024 * 1024, name="/my_queue")
+queue = HyperQ(1024 * 1024, name="my_queue")
 
 # Put data
 queue.put("Hello, World!")
@@ -138,7 +138,7 @@ def consumer(queue_name):
 
 if __name__ == "__main__":
     # Create queue in main process
-    queue = HyperQ(1024 * 1024, name="/shared_queue")
+    queue = HyperQ(1024 * 1024, name="shared_queue")
     queue_name = queue.shm_name
 
     # Start producer and consumer processes
@@ -157,7 +157,7 @@ if __name__ == "__main__":
 from hyperq import BytesHyperQ
 
 # For bytes data, use BytesHyperQ for better performance
-queue = BytesHyperQ(1024 * 1024, name="/bytes_queue")
+queue = BytesHyperQ(1024 * 1024, name="bytes_queue")
 
 # Put bytes data
 queue.put(b"Hello, World!")

@@ -192,7 +192,7 @@ def main():
         for message_size in [32, 64, 128, 256, 512, 1024, 4 * 1024, 8 * 1024, 16 * 1024, 32 * 1024]
     ]
 
-    print("Running configurable producer/consumer bytes performance benchmarks...")
+    print("Running bytes performance benchmarks...")
     print("=" * 80)
 
     headers = [
