@@ -1015,6 +1015,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Email**: mkhitaryan.martin@2000gmail.com
 
 ## 🔄 Version History
+- **0.1.0**: Refactored constructor and destructor in hyperq.hpp; reference count via atomic variable.
 - **0.0.9**: Updated benchmarks in README.md.
 - **0.0.8**: Updated benchmark suite, test suite, pyproject.toml configuration; optimized CI/CD release workflow.
 - **0.0.7**: Replaced is_creator logic with ref count logic for better shared memory management; identified and documented issue with multiprocessing spawn start method not working properly with multiple consumers and producers.
