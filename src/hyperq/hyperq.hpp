@@ -12,6 +12,7 @@
 #include <pthread.h>
 #include <time.h>
 #include <errno.h>
+#include <atomic>
 
 constexpr size_t page_align(size_t n, size_t pagesize)
 {
@@ -25,13 +26,12 @@ struct SharedQueueHeader
     size_t size_;
     size_t buffer_size;
     
-    // Reference counting for shared memory cleanup
-    size_t ref_count;
-
     pthread_mutex_t mutex;
     pthread_cond_t not_empty;
     pthread_cond_t not_full;
-    
+
+    std::atomic<size_t> ref_count;
+
     char buffer_shm_name[32];
 };
 
@@ -41,11 +41,12 @@ private:
     SharedQueueHeader *header;
     char *buffer;
     size_t buffer_size;
-    int shm_fd;
-    int buffer_shm_fd;
+    size_t header_size;
     std::string shm_name;
     std::string buffer_shm_name;
-    size_t header_size;
+
+    int shm_fd;
+    int buffer_shm_fd;
 
     void init_sync_objects()
     {
@@ -66,15 +67,14 @@ private:
 
     void map_header()
     {
-        header = static_cast<SharedQueueHeader *>(
-            mmap(nullptr, header_size, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0));
+        header = static_cast<SharedQueueHeader *>(mmap(nullptr, header_size, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0));
         if (header == MAP_FAILED) [[unlikely]]
         {
             throw std::runtime_error("mmap header failed: " + std::string(strerror(errno)));
         }
     }
 
-    void setup_virtual_memory(size_t buffer_sz)
+    void map_buffer(size_t buffer_sz)
     {
         buffer = static_cast<char *>(mmap(nullptr, 2 * buffer_sz, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0));
         if (buffer == MAP_FAILED) [[unlikely]]
@@ -97,35 +97,19 @@ private:
         }
     }
 
-    void init_header()
+    void init_header_data()
     {
-        header_size = page_align(sizeof(SharedQueueHeader), getpagesize());
+        header->head = 0;
+        header->tail = 0;
+        header->size_ = 0;
+        header->buffer_size = buffer_size;
+        header->ref_count.store(1);
+        strncpy(header->buffer_shm_name, buffer_shm_name.c_str(), sizeof(header->buffer_shm_name) - 1);
+        header->buffer_shm_name[sizeof(header->buffer_shm_name) - 1] = '\0';
     }
 
-    void setup_buffer()
+    void create_header_shm()
     {
-        const size_t buffer_sz = page_align(buffer_size, getpagesize());
-        setup_virtual_memory(buffer_sz);
-    }
-
-public:
-    HyperQ(size_t cap, const std::string &name)
-    {
-        if (cap == 0) [[unlikely]]
-        {
-            throw std::invalid_argument("Capacity must be greater than 0");
-        }
-
-        
-        init_header();
-
-        buffer_size = page_align(cap, getpagesize());
-
-        shm_name = name;
-        char buffer_name[32];
-        snprintf(buffer_name, sizeof(buffer_name), "/b_%s", shm_name.c_str());
-        buffer_shm_name = buffer_name;
-
         shm_fd = shm_open(shm_name.c_str(), O_CREAT | O_RDWR, 0666);
         if (shm_fd == -1) [[unlikely]]
         {
@@ -138,8 +122,11 @@ public:
             shm_unlink(shm_name.c_str());
             throw std::runtime_error("ftruncate header failed: " + std::string(strerror(errno)) + " (size=" + std::to_string(header_size) + ")");
         }
+    }
 
-        buffer_shm_fd = shm_open(buffer_name, O_CREAT | O_RDWR, 0666);
+    void create_buffer_shm()
+    {
+        buffer_shm_fd = shm_open(buffer_shm_name.c_str(), O_CREAT | O_RDWR, 0666);
         if (buffer_shm_fd == -1) [[unlikely]]
         {
             close(shm_fd);
@@ -152,52 +139,65 @@ public:
             close(shm_fd);
             close(buffer_shm_fd);
             shm_unlink(shm_name.c_str());
-            shm_unlink(buffer_name);
+            shm_unlink(buffer_shm_name.c_str());
             throw std::runtime_error("ftruncate buffer failed: " + std::string(strerror(errno)) + " (size=" + std::to_string(buffer_size) + ")");
         }
-
-        map_header();
-
-        header->head = 0;
-        header->tail = 0;
-        header->size_ = 0;
-        header->buffer_size = buffer_size;
-        header->ref_count = 1;  // First instance
-        strncpy(header->buffer_shm_name, buffer_name, sizeof(header->buffer_shm_name) - 1);
-        header->buffer_shm_name[sizeof(header->buffer_shm_name) - 1] = '\0';
-
-        init_sync_objects();
-        setup_buffer();
     }
 
-    HyperQ(const std::string &name)
+    void open_header_shm()
     {
-        shm_name = name;
-
         shm_fd = shm_open(shm_name.c_str(), O_RDWR, 0666);
         if (shm_fd == -1) [[unlikely]]
         {
             throw std::runtime_error("shm_open header failed");
         }
+    }
 
-        init_header();
-        map_header();
-        buffer_size = header->buffer_size;
-        buffer_shm_name = header->buffer_shm_name;
-
+    void open_buffer_shm()
+    {
         buffer_shm_fd = shm_open(buffer_shm_name.c_str(), O_RDWR, 0666);
         if (buffer_shm_fd == -1) [[unlikely]]
         {
             close(shm_fd);
             throw std::runtime_error("shm_open buffer failed");
         }
+    }
 
-        // Increment reference count atomically
-        pthread_mutex_lock(&header->mutex);
-        header->ref_count++;
-        pthread_mutex_unlock(&header->mutex);
+public:
+    HyperQ(size_t cap, const std::string &name)
+    {
+        if (cap < 0) [[unlikely]]
+        {
+            throw std::invalid_argument("Capacity must be greater than 0");
+        }
 
-        setup_buffer();
+        shm_name = name;
+        header_size = page_align(sizeof(SharedQueueHeader), getpagesize());
+        buffer_size = page_align(cap, getpagesize());
+
+        char buffer_name[32];
+        snprintf(buffer_name, sizeof(buffer_name), "b_%s", shm_name.c_str());
+        buffer_shm_name = buffer_name;
+
+        create_header_shm();
+        create_buffer_shm();
+        map_header();
+        init_header_data();
+        init_sync_objects();
+        map_buffer(buffer_size);
+    }
+
+    HyperQ(const std::string &name)
+    {
+        shm_name = name;
+        header_size = page_align(sizeof(SharedQueueHeader), getpagesize());
+        open_header_shm();
+        map_header();
+        buffer_size = header->buffer_size;
+        buffer_shm_name = header->buffer_shm_name;
+        open_buffer_shm();
+        header->ref_count.fetch_add(1);
+        map_buffer(buffer_size);
     }
 
     ~HyperQ()
@@ -211,13 +211,8 @@ public:
                 munmap(buffer, 2 * buffer_sz);
             }
 
-            // Check reference count before unmapping header
-            bool should_unlink = false;
-            pthread_mutex_lock(&header->mutex);
-            header->ref_count--;
-            should_unlink = (header->ref_count == 0);
-            size_t final_ref_count = header->ref_count;
-            pthread_mutex_unlock(&header->mutex);
+            header->ref_count.fetch_sub(1);
+            bool should_unlink = (header->ref_count.load() == 0);
             
             munmap(header, header_size);
             close(shm_fd);
