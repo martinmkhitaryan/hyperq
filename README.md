@@ -4,8 +4,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PyPI version](https://badge.fury.io/py/hyperq.svg)](https://badge.fury.io/py/hyperq)
 
-> ⚠️ **Warning: This package is not ready for production usage yet.** It's currently in active development and may have bugs, especially with multiprocessing scenarios using the spawn start method in macOS.
-
 **Hyper-fast queue for Python** - A high-performance queue implementation using Cython and C++ for inter-process communication.
 
 ## 🚀 Features
@@ -15,7 +13,7 @@
 - **Ring Buffer Architecture**: Uses a ring buffer with double virtual memory mapping to the same physical memory.
 - **Two Queue Types**:
   - `HyperQ`: General-purpose queue for Python objects
-  - `BytesHyperQ`: Specialized queue for bytes data (even faster)
+  - `BytesHyperQ`: Specialized queue for bytes data
 - **Thread-Safe**: Safe for concurrent access
 - **Unix-like Systems**: Works on Linux and macOS (POSIX-compliant systems)
 - **Python 3.10+**: Modern Python support
@@ -957,11 +955,7 @@ pytest --cov=hyperq
 ## 📈 Running Benchmarks
 
 ```bash
-# 1 producer, 1 consumer benchmark
-python benchmarks/benchmark_bytes_transfering_1p_1c.py
-
-# 10 producers, 10 consumers benchmark
-python benchmarks/benchmark_bytes_transfering_10p_10c.py
+python benchmarks/benchmark_bytes_transfering.py
 ```
 
 ## 🏗️ Building from Source
@@ -1015,6 +1009,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Email**: mkhitaryan.martin@2000gmail.com
 
 ## 🔄 Version History
+- **1.0.0**: First working version on Linux and macOS (single producer and single consumer only; multiple producers or consumers not supported).
 - **0.1.0**: Refactored constructor and destructor in hyperq.hpp; reference count via atomic variable.
 - **0.0.9**: Updated benchmarks in README.md.
 - **0.0.8**: Updated benchmark suite, test suite, pyproject.toml configuration; optimized CI/CD release workflow.
@@ -1025,5 +1020,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **0.0.3**: Fixed cibuildwheel configuration for proper linux wheel build;
 - **0.0.2**: Added proper PyPI wheel support for Linux and macOS using cibuildwheel; improved release workflow for multi-platform builds and C++20 compatibility
 - **0.0.1**: Initial release with HyperQ and BytesHyperQ implementations
-
 ---

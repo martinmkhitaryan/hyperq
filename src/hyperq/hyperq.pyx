@@ -8,6 +8,7 @@ import cython
 
 import ctypes
 from multiprocessing import context
+from pickle import UnpicklingError
 
 
 cdef extern from "hyperq.hpp":
@@ -99,7 +100,9 @@ cdef class HyperQ:
                 msg_bytes = PyBytes_FromStringAndSize(data_ptr, message_size)
                 try:
                     return self.loads(msg_bytes)
-                except:
+                except UnpicklingError:
+                    # if it fails to unpickle, it means the data was raw bytes and not a pickled object,
+                    # so just return the bytes as-is.
                     return msg_bytes
             else:
                 raise RuntimeError("Unexpected failure in get()")
